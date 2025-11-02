@@ -4,49 +4,30 @@ on:
   push:
     tags:
       - 'v*'
-  release:
-    types: [created]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04  # Используем старую стабильную версию
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - name: Build with Buildozer
+      uses: ArtemSBulgakov/buildozer-action@v1
       with:
-        python-version: '3.9'
-        
-    - name: Install system dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
-        sudo apt install -y libtinfo5 || true
-        sudo apt install -y libtinfo6 || true
-        sudo apt install -y libtinfo-dev || true
-        sudo apt install -y libncurses-dev || true
-        sudo apt install -y libncurses5 || true
-        sudo apt install -y libncursesw5 || true
-        
-    - name: Install Buildozer
-      run: |
-        pip install buildozer cython==0.29.33
-        
-    - name: Build APK
-      run: |
-        buildozer -v android debug
+        buildozer-version: stable
+        target: android
+        type: debug
         
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: PDD-Quiz-APK
+        name: PDD-App
         path: bin/*.apk
+        retention-days: 1
         
     - name: Upload to Release
-      if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
         files: bin/*.apk
