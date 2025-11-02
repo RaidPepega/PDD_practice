@@ -7,27 +7,29 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04  # Используем старую стабильную версию
+    runs-on: ubuntu-20.04
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Build with Buildozer
-      uses: ArtemSBulgakov/buildozer-action@v1
+    - name: Setup Python
+      uses: actions/setup-python@v4
       with:
-        buildozer-version: stable
-        target: android
-        type: debug
+        python-version: '3.8'  # Старая стабильная версия
+        
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y python3-pip python3-setuptools openjdk-8-jdk git zip unzip libncurses5
+        pip install buildozer
+        
+    - name: Build APK
+      run: |
+        buildozer -v android debug
         
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: PDD-App
+        name: PDD-App-APK
         path: bin/*.apk
-        retention-days: 1
-        
-    - name: Upload to Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: bin/*.apk
