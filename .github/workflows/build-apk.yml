@@ -35,12 +35,14 @@ jobs:
           zlib1g-dev \
           libncurses5-dev
           
-    - name: Install Buildozer
-      run: pip install buildozer
+    - name: Install Python dependencies
+      run: |
+        pip install buildozer
+        pip install -r requirements.txt
         
     - name: Build APK
       run: |
-        buildozer -v android debug  # ← УБРАЛИ clean!
+        buildozer -v android debug
         
     - name: Upload APK
       uses: actions/upload-artifact@v4
