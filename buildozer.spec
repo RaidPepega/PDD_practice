@@ -10,13 +10,13 @@ source.include_exts = py,png,jpg,jpeg,kv,atlas,json
 source.include_dirs = data, images
 
 version = 1.0
-requirements = python3,kivy,requests,pillow,android
+requirements = python3,kivy,requests,pillow
 
 # Разрешения Android
 android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
 # Версии Android
-android.api = 33
+android.api = 31
 android.minapi = 21
 android.ndk = 25b
 

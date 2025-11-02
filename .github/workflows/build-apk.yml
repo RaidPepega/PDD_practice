@@ -4,10 +4,11 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:  # Добавьте ручной запуск
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04  # Используйте более новую версию
     
     steps:
     - name: Checkout code
@@ -16,20 +17,35 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.8'  # Старая стабильная версия
+        python-version: '3.9'
         
-    - name: Install dependencies
+    - name: Install system dependencies
       run: |
         sudo apt update
-        sudo apt install -y python3-pip python3-setuptools openjdk-8-jdk git zip unzip libncurses5
-        pip install buildozer
+        sudo apt install -y \
+          python3-pip \
+          openjdk-11-jdk \
+          git \
+          zip \
+          unzip \
+          libncurses5 \
+          autoconf \
+          libtool \
+          pkg-config \
+          zlib1g-dev \
+          libncurses5-dev
+          
+    - name: Install Buildozer
+      run: pip install buildozer
         
     - name: Build APK
       run: |
+        buildozer android clean
         buildozer -v android debug
         
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: PDD-App-APK
+        name: PDD-Quiz-APK
         path: bin/*.apk
+        retention-days: 30
