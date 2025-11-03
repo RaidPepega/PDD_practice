@@ -4,7 +4,7 @@ package.name = smartquizpdd
 package.domain = ru.andf.smartquiz
 
 source.dir = .
-source.include_exts = py,png,jpg,jpeg,kv,atlas,json
+source.include_exts = py,png,jpg,jpeg,kv,atlas,json,txt
 source.include_dirs = data, images
 
 version = 1.0
