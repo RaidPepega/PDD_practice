@@ -780,16 +780,23 @@ try:
             self.themes = {}
             self.all_questions = []
 
+            print("DEBUG: Starting QuizApp initialization...")
+
             if not self.question_manager.load_questions():
+                print("DEBUG: Question loading FAILED")
                 # Просто создаем пустые данные если не загрузилось
                 self.themes = {}
                 self.all_questions = []
             else:
+                print("DEBUG: Question loading SUCCESS")
                 self.themes = self.question_manager.themes
                 self.all_questions = self.question_manager.all_questions
-
+                print(f"DEBUG: Loaded {len(self.themes)} themes")
+                print(f"DEBUG: Loaded {len(self.all_questions)} total questions")
             self.progress_data = {}
             self.load_progress()
+
+        print("DEBUG: QuizApp initialization completed")
 
         def get_app_storage_path(self):
             from kivy.utils import platform
