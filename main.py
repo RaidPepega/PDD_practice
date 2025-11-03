@@ -41,7 +41,7 @@ try:
             all_quiz_btn = Button(
                 text='Тянуть билет',
                 font_size='20sp',
-                size_hint=(0.75, 0.2),
+                size_hint=(0.9, 0.2),
                 pos_hint={'center_x': 0.5},
                 background_color=(0.35, 0.65, 0.35, 1),
                 background_normal='',
@@ -54,7 +54,7 @@ try:
             themes_btn = Button(
                 text='Выбор темы',
                 font_size='20sp',
-                size_hint=(0.75, 0.2),
+                size_hint=(0.9, 0.2),
                 pos_hint={'center_x': 0.5},
                 background_color=(0.9, 0.85, 0.25, 1),
                 background_normal = '',
@@ -67,7 +67,7 @@ try:
             exit_btn = Button(
                 text='Выход',
                 font_size='18sp',
-                size_hint=(0.75, 0.2),
+                size_hint=(0.9, 0.2),
                 pos_hint={'center_x': 0.5},
                 background_color=(1, 0.3, 0.3, 1)
             )
@@ -574,7 +574,7 @@ try:
             self.layout.clear_widgets()
 
             total_questions = len(self.questions)
-            percentage = (self.score / total_questions) * 100
+            percentage = (self.score / total_questions) * 100 if total_questions > 0 else 0
 
             # сохранение только для вопросов по темам
             if "20 случайных вопросов" not in self.current_theme_name:
@@ -700,12 +700,16 @@ try:
             try:
                 #Загрузка тем
                 manifest_path = self.get_data_path('themes_manifest.json')
+                print(f"DEBUG: Manifest path: {manifest_path}")
+                print(f"DEBUG: Manifest exists: {os.path.exists(manifest_path)}")
                 if not os.path.exists(manifest_path):
                     Logger.error(f"QuestionManager: Manifest not found at {manifest_path}")
                     return False
 
                 with open(manifest_path, 'r', encoding='utf-8') as f:
                     themes_manifest = json.load(f)
+
+                print(f"DEBUG: Manifest loaded, {len(themes_manifest)} themes found")
 
                 #Загрузка вопросов для каждой темы
                 for theme_info in themes_manifest:
@@ -716,9 +720,15 @@ try:
                     theme_file = f"theme{theme_index}.json"
                     theme_path = self.get_data_path(theme_file)
 
+                    print(f"DEBUG: Loading theme {theme_index}: {theme_name}")
+                    print(f"DEBUG: Theme path: {theme_path}")
+                    print(f"DEBUG: Theme exists: {os.path.exists(theme_path)}")
+
                     if os.path.exists(theme_path):
                         with open(theme_path, 'r', encoding='utf-8') as f:
                             questions = json.load(f)
+
+                        print(f"DEBUG: Loaded {len(questions)} questions for {theme_name}")
 
                         self.themes[theme_name] = {
                             'folder': theme_info['folder'],
