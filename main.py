@@ -182,13 +182,13 @@ try:
 
                 # для прикола ахахаха
                 if progress['best_score'] == total_questions:
-                    emoji = ':)'
+                    emoji = ''
                     color = (0, 1, 0, 1)
                 elif progress['best_score'] > 0:
-                    emoji = ':|'
+                    emoji = ''
                     color = (0.9, 0.85, 0.25, 1)
                 else:
-                    emoji = ':('
+                    emoji = ''
                     color = (0.8, 0.8, 0.8, 1)
 
                 button_text = f'{emoji} {theme_name}\n{progress["best_score"]}/{total_questions}'
@@ -197,7 +197,7 @@ try:
                     text=button_text,
                     font_size='14sp',
                     size_hint_y=None,
-                    height=60,
+                    height=100,
                     background_color=color
                 )
                 theme_btn.bind(on_press=lambda instance, theme=theme_name: self.start_theme_quiz(theme))
@@ -772,7 +772,7 @@ try:
             from kivy.utils import platform
             if platform == 'android':
                 # На Android файлы В ПАПКЕ data/
-                return os.path.join('data', filename) 
+                return os.path.join('data', filename)
             else:
                 # На ПК тоже в папке data
                 return os.path.join('data', filename)
@@ -834,14 +834,24 @@ try:
         def get_image_path(self, filename, theme_folder=''):
             from kivy.utils import platform
 
+            # Если нет файла - сразу заглушка
+            if not filename:
+                return self.get_no_image_path()
+
             if platform == 'android':
-                #На Android используем относительные пути
-                if theme_folder and filename:
-                    return os.path.join(theme_folder, filename)
-                elif filename:
-                    return filename
-                else:
-                    return 'No_image.jpg'
+                # Пробуем разные пути
+                possible_paths = [
+                    os.path.join(theme_folder, filename) if theme_folder else filename,
+                    filename,  # Просто имя файла
+                    'No_image.jpg'  # Заглушка
+                ]
+
+                for path in possible_paths:
+                    if os.path.exists(path):
+                        return path
+
+                # Если ничего не нашли - возвращаем заглушку
+                return 'No_image.jpg'
             else:
                 #На ПК используем обычные пути
                 if theme_folder and filename:
