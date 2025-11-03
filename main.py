@@ -771,7 +771,9 @@ try:
             self.all_questions = []
 
             if not self.question_manager.load_questions():
-                self.load_fallback_questions()
+                # Просто создаем пустые данные если не загрузилось
+                self.themes = {}
+                self.all_questions = []
             else:
                 self.themes = self.question_manager.themes
                 self.all_questions = self.question_manager.all_questions
