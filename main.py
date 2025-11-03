@@ -12,9 +12,29 @@ import json
 import os
 from kivy.utils import platform
 import traceback
+
 try:
-    # Запишем что стартуем
-    with open('/storage/emulated/0/Download/debug_start.txt', 'w') as f:
+    # Проверка какие файлы есть в APK
+    import os
+
+    files = os.listdir('.')
+    with open('/storage/emulated/0/Download/apk_files.txt', 'w') as f:
+        f.write("Файлы в APK:\n")
+        for file in files:
+            f.write(f"{file}\n")
+
+        # Проверка папки data
+        if os.path.exists('data'):
+            data_files = os.listdir('data')
+            f.write("\nФайлы в data/:\n")
+            for file in data_files[:10]:  # первые 10 файлов
+                f.write(f"{file}\n")
+
+    # Умная запись отладки для Android и ПК
+    debug_dir = '/storage/emulated/0/Download' if os.path.exists('/storage/emulated/0/Download') else '.'
+    start_file = os.path.join(debug_dir, 'debug_start.txt')
+
+    with open(start_file, 'w') as f:
         f.write("Основное приложение запускается...")
 
     class MenuScreen(Screen):
@@ -990,7 +1010,10 @@ try:
         QuizApp().run()
 
 except Exception as e:
-    # Запишем ошибку если будет
-    with open('/storage/emulated/0/Download/debug_error.txt', 'w') as f:
-        f.write(f"ОШИБКА В ОСНОВНОМ ПРИЛОЖЕНИИ: {str(e)}\n")
+    # Умная запись ошибки
+    debug_dir = '/storage/emulated/0/Download' if os.path.exists('/storage/emulated/0/Download') else '.'
+    error_file = os.path.join(debug_dir, 'debug_error.txt')
+
+    with open(error_file, 'w') as f:
+        f.write(f"ОШИБКА: {str(e)}\n")
         f.write(traceback.format_exc())
