@@ -769,11 +769,12 @@ try:
                 return False
 
         def get_data_path(self, filename):
-            #найти путь к файлам
             from kivy.utils import platform
             if platform == 'android':
-                return filename
+                # На Android файлы В ПАПКЕ data/
+                return os.path.join('data', filename) 
             else:
+                # На ПК тоже в папке data
                 return os.path.join('data', filename)
 
         def get_theme_questions(self, theme_name):
